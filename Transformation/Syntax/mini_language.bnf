@@ -11,9 +11,10 @@ prog
 
 <Stmt>               ::= <Declare> | <Assign> | <Print> | <Block> | <Cond> | <Iter>                     .
 
-<Declare>            ::=                                                                                .
+<Declare>            ::= <Integer> <Id> | <Boolean> <Id>                                                .
 
-<Assign>             ::=                                                                                .
+<Assign>             ::= <IncrDecr> | "int" <Id> "=" <Express> | "bool" <Id> "=" <Express>
+                        | <Id> "=" <Express>                                                            .
 
 <Block>              ::= "{" <StmtList> "}"                                                             .
 
@@ -21,15 +22,15 @@ prog
 
 <If>                 ::= "if" "(" <Express> ")" "then" <Block>                                          .
 
-<IfElse>             ::= "if" "(" <Express> ")" "then" <Block> "else" <Block>                          .
+<IfElse>             ::= "if" "(" <Express> ")" "then" <Block> "else" <Block>                           .
 
 <IncrDecr>           ::= <PreIncrDecr> | <PostIncrDecr>                                                 .
 
-<PreIncrDecr>        ::=                                                                                .
+<PreIncrDecr>        ::= "++" <Id> | "--" <Id>                                                          .
 
-<PostIncrDecr>       ::=                                                                                .
+<PostIncrDecr>       ::= <Id> "++" | <Id> "--"                                                          .
 
-<Iter>               ::=                                                                                .
+<Iter>               ::= <ForIter> | <WhileIter>                                                        .
 
 <ForIter>            ::= "for" "(" <Assign> "," <Express> "," <Assign> ")" <Block>                      .
 
