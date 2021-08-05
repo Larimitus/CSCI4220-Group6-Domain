@@ -32,8 +32,11 @@ fun generateSchemaTokenName( yytext ) =
 
 alpha        = [A-Za-z];
 digit        = [0-9];
-alphanumeric = [A-Za-z0-9_];
+alphanumeric = [A-Za-z0-9];
+identifier   = {alpha}{alphanumeric}*;
 ws           = [\  \t \n];
+boolean      = "true" | "false";
+number       = {digit}+(\.{digit}+)?;
 
 schema_id    = "<" {alpha}{alphanumeric}* ">_" {alphanumeric}+;
 comment      = "//" .* ;
@@ -45,6 +48,44 @@ comment      = "//" .* ;
 {digit}+                      => ( SHELL("integer"   , yytext,     getNextTokenPos(yytext))    );
 {alpha}{alphanumeric}*        => ( SHELL("id"        , yytext,     getNextTokenPos(yytext))    );
 
+<INITIAL> ";"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> ","                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "("                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> ")"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "}"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "{"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+
+<INITIAL> "<"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "<="                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> ">"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> ">="                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "=="                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "!="                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "="                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+
+<INITIAL> "+"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "++"                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "-"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "--"                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "*"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "/"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "%"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+
+<INITIAL> "if"                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "else"                    => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "then"                    => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "not"                     => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "for"                     => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "while"                   => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+
+<INITIAL> "&&"                   => ( SHELL(yytext                               , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "||"                   => ( SHELL(yytext                               , yytext,     getNextTokenPos(yytext))    );
+
+<INITIAL> "print"                   => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+
+<INITIAL> {boolean}                 => ( SHELL("int"                             , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "~"? {digit}+             => ( SHELL("bool"                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> {identifier}              => ( SHELL("id"                              , yytext,     getNextTokenPos(yytext))    );
 
 
 {schema_id}                   => ( SHELL(generateSchemaTokenName(yytext), yytext, getNextTokenPos(yytext))    );

@@ -1,5 +1,68 @@
 USE_LR_PARSER
 
 prog
-(* ======================================================================================================= *)
+
+(* ======================================================================================================= *)
+(*                                             basic expressions                                           *)
+(* ======================================================================================================= *)
 <prog>               ::= <stmt_list> "."                                                                .
+
+<StmtList>           ::= <Stmt> ";" <StmtList> | <Stmt> ";" | <epsilon>                                 .
+
+<Stmt>               ::= <Declare> | <Assign> | <Print> | <Block> | <Cond> | <Iter>                     .
+
+<Declare>            ::=                                                                                .
+
+<Assign>             ::=                                                                                .
+
+<Block>              ::= "{" <StmtList> "}"                                                             .
+
+<Cond>               ::= <If> | <IfElse>                                                                .
+
+<If>                 ::= "if" "(" <Express> ")" "then" <Block>                                          .
+
+<IfElse>             ::= "if" "(" <Express> ")" "then" <Block> "else" <Block>                          .
+
+<IncrDecr>           ::= <PreIncrDecr> | <PostIncrDecr>                                                 .
+
+<PreIncrDecr>        ::=                                                                                .
+
+<PostIncrDecr>       ::=                                                                                .
+
+<Iter>               ::=                                                                                .
+
+<ForIter>            ::= "for" "(" <Assign> "," <Express> "," <Assign> ")" <Block>                      .
+
+<WhileIter>          ::= "while" "(" <Express> ")" <Block>                                              .
+
+<Express>            ::= <Express> "||" <LogicAnd> | <LogicEqual>                                       .
+
+<LogicAnd>           ::= <LogicAnd> "&&" <LogicEqual> | <LogicEqual>                                    .
+
+<LogicEqual>         ::= <LogicEqual> "==" <RelOp> | <LogicEqual> "!=" <RelOp> | <RelOp>                .
+
+<RelOp>              ::= <RelOp> "<" <AddOp> | <RepOp> "<=" <AddOp> | <RelOp> ">" <AddOp>
+                        | <RelOp> ">=" <AddOp> | <AddOp>                                                .
+
+<AddOp>              ::= <AddOp> "+" <MultiOp> | <AddOp> "-" <MultiOp> | <MultiOp>                      .
+
+<MultiOp>            ::= <MultiOp> "*" <UniMin> | <MultiOp> "/" <UniMin> 
+                        | <MultiOp> "%" <UniMin> | <UniMin>                                             .
+
+<UniMin>             ::= "-" <UniMin> | <ExpOp>                                                         .
+
+<ExpOp>              ::= <Ops> "*" <ExpOp> | <Ops>                                                      .
+
+<Ops>                ::= "(" <Express> ")" | "|" <Express> "|" | "not" "(" <Express> ")" 
+                        | <Id> | <IncrDecr> | <Value>                                                   .
+
+<value>              ::= <integer> | <boolean>                                                          .
+
+<Print>              ::= "print" "(" <Express> ")"                                                      .
+(* ======================================================================================================= *)
+<Integer>           ::= int                                                                             .
+<Boolean>           ::= bool                                                                            .
+<Id>                ::= Id                                                                              .
+<Type>              ::= "int" | "bool"                                                                  .
+(* ======================================================================================================= *)
+<epsilon>   ::= .
