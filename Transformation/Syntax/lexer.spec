@@ -67,19 +67,24 @@ comment      = "//" .* ;
 <INITIAL> "++"                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "-"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "--"                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "^"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "*"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "/"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "%"                       => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 
 <INITIAL> "if"                      => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
-<INITIAL> "else"                    => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "then"                    => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "else"                    => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "not"                     => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "for"                     => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "while"                   => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 
 <INITIAL> "&&"                   => ( SHELL(yytext                               , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> "||"                   => ( SHELL(yytext                               , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "|"                    => ( SHELL(yytext                               , yytext,     getNextTokenPos(yytext))    );
+
+<INITIAL> "bool"                    => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> "int"                     => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 
 <INITIAL> "print"                   => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 
