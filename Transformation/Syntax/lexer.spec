@@ -31,7 +31,9 @@ fun generateSchemaTokenName( yytext ) =
 %header (functor Target_LexFn(val getNextTokenPos : string -> {line: word, column: word}));
 
 alpha        = [A-Za-z];
-digit        = [0-9];
+digit           = [0-9];
+posDigit        = [1-9];
+integer         = 0 | {posDigit}{digit}*;
 alphanumeric = [A-Za-z0-9];
 identifier   = {alpha}{alphanumeric}*;
 ws           = [\  \t \n];
@@ -88,8 +90,8 @@ comment      = "//" .* ;
 
 <INITIAL> "print"                   => ( SHELL(yytext                            , yytext,     getNextTokenPos(yytext))    );
 
-<INITIAL> {boolean}                 => ( SHELL("int"                             , yytext,     getNextTokenPos(yytext))    );
-<INITIAL> "~"? {digit}+             => ( SHELL("bool"                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> {boolean}                 => ( SHELL("bool"                            , yytext,     getNextTokenPos(yytext))    );
+<INITIAL> {integer}                 => ( SHELL("int"                             , yytext,     getNextTokenPos(yytext))    );
 <INITIAL> {identifier}              => ( SHELL("id"                              , yytext,     getNextTokenPos(yytext))    );
 
 

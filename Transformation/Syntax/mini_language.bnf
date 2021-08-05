@@ -5,16 +5,16 @@ prog
 (* ======================================================================================================= *)
 (*                                             basic expressions                                           *)
 (* ======================================================================================================= *)
-<prog>               ::= <stmt_list> "."                                                                .
+<prog>               ::= <StmtList> "."                                                                 .
 
 <StmtList>           ::= <Stmt> ";" <StmtList> | <Stmt> ";" | <epsilon>                                 .
 
 <Stmt>               ::= <Declare> | <Assign> | <Print> | <Block> | <Cond> | <Iter>                     .
 
-<Declare>            ::= <Integer> <Id> | <Boolean> <Id>                                                .
+<Declare>            ::= "int" identifier | "bool" identifier                                           .
 
-<Assign>             ::= <IncrDecr> | "int" <Id> "=" <Express> | "bool" <Id> "=" <Express>
-                        | <Id> "=" <Express>                                                            .
+<Assign>             ::= <IncrDecr> | "int" identifier "=" <Express> | "bool" identifier "=" <Express>
+                        | identifier "=" <Express>                                                      .
 
 <Block>              ::= "{" <StmtList> "}"                                                             .
 
@@ -26,9 +26,9 @@ prog
 
 <IncrDecr>           ::= <PreIncrDecr> | <PostIncrDecr>                                                 .
 
-<PreIncrDecr>        ::= "++" <Id> | "--" <Id>                                                          .
+<PreIncrDecr>        ::= "++" identifier | "--" identifier                                              .
 
-<PostIncrDecr>       ::= <Id> "++" | <Id> "--"                                                          .
+<PostIncrDecr>       ::= identifier "++" | identifier "--"                                              .
 
 <Iter>               ::= <ForIter> | <WhileIter>                                                        .
 
@@ -55,15 +55,11 @@ prog
 <ExpOp>              ::= <Ops> "*" <ExpOp> | <Ops>                                                      .
 
 <Ops>                ::= "(" <Express> ")" | "|" <Express> "|" | "not" "(" <Express> ")" 
-                        | <Id> | <IncrDecr> | <Value>                                                   .
+                        | identifier | <IncrDecr> | <Value>                                             .
 
-<value>              ::= <integer> | <boolean>                                                          .
+<value>              ::= integer | boolean                                                              .
 
 <Print>              ::= "print" "(" <Express> ")"                                                      .
 (* ======================================================================================================= *)
-<Integer>           ::= int                                                                             .
-<Boolean>           ::= bool                                                                            .
-<Id>                ::= Id                                                                              .
-<Type>              ::= "int" | "bool"                                                                  .
-(* ======================================================================================================= *)
 <epsilon>   ::= .
+(* ======================================================================================================= *)
