@@ -190,7 +190,7 @@ fun E( itree(inode("Express",_),
         m0
     ) = let
           val (v1,m1) = E(RelOp, m0)
-          val (v2,m2) = E(additive2, m1)
+          val (v2,m2) = E(AddOp, m1)
         in
           (Boolean(toInt(v1) <= toInt(v2)), m2)
         end
@@ -214,7 +214,7 @@ fun E( itree(inode("Express",_),
                 [
                     RelOp,
                     itree(inode(">=",_), [] ),
-                    additive2
+                    AddOp
                 ]
             ),
         m0
@@ -258,7 +258,7 @@ fun E( itree(inode("Express",_),
             ),
         m0
     ) = let
-          val (v1,m1) = E(additive, m0)
+          val (v1,m1) = E(AddOp, m0)
           val (v2,m2) = E(MultiOp, m1)
         in
           (Integer(toInt(v1) - toInt(v2)), m2)
@@ -364,14 +364,6 @@ fun E( itree(inode("Express",_),
           (Integer(pow(toInt(v1),toInt(v2))), m2)
         end
   
-  | E( itree(inode("ExpOp",_),
-                [
-                    Ops
-                ]
-            ),
-        m
-    ) = E(Ops, m)
-  
   (* Operations *)
   | E( itree(inode("Ops",_),
                 [
@@ -435,6 +427,7 @@ fun E( itree(inode("Express",_),
     ) = E(Ops, m)
 
   (* Increment & Decrement *)
+(*   
   | E( itree(inode("IncrDecr",_),
                 [
                     PreIncrDecr
@@ -450,6 +443,7 @@ fun E( itree(inode("Express",_),
             ),
         m
     ) = E(PostIncrDecr, m)
+*)
 
   (* PreIncrement & PreDecrement *)
   | E( itree(inode("PreIncrDecr",_), 
@@ -591,53 +585,13 @@ fun M(  itree(inode("prog",_),
     ) = M( Stmt, m )
    
   (* Statement *)
-  | M( itree(inode("Stmt",_),
+  | M( itree(inode("stmt",_),
                 [
-                    Declare
+                    stmt
                 ]
             ),
         m
-    ) = M(Declare, m)
-
-  | M( itree(inode("Stmt",_),
-                [
-                    Assign
-                ]
-            ),
-        m
-    ) = M(Assign, m)
-
-  | M( itree(inode("Stmt",_),
-                [
-                    Print
-                ]
-            ),
-        m
-    ) = M(Print, m)
-
-  | M( itree(inode("Stmt",_),
-                [
-                    Block
-                ]
-            ),
-        m
-    ) = M(Block, m)
-
-  | M( itree(inode("Stmt",_),
-                [
-                    Cond
-                ]
-            ),
-        m
-    ) = M(Cond, m)
-
-  | M( itree(inode("Stmt",_),
-                [
-                    Iter
-                ]
-            ),
-        m
-    ) = M(Iter, m)
+    ) = M(stmt, m)
   
   (* Declaration *)
   | M( itree(inode("Declare",_),
@@ -737,6 +691,7 @@ fun M(  itree(inode("prog",_),
         end
          
   (* Conditional *)
+(*   
   | M( itree(inode("Cond",_),
                    [
                        if_stmt
@@ -752,6 +707,7 @@ fun M(  itree(inode("prog",_),
             ),
         m
     ) = M(if_else, m)
+*)
 
   (* If *)
   | M( itree(inode("if_stmt", _),
@@ -816,7 +772,7 @@ fun M(  itree(inode("prog",_),
                 ]
             ),
         m
-    ) = M(iter, m)
+    ) = M(Iter, m)
   
   (* For Iterator *)
   | M( itree(inode("ForIter",_),
