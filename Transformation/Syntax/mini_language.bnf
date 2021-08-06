@@ -62,7 +62,7 @@ prog
                         | <RelOp>                                                                       .
 
 <RelOp>              ::= <RelOp> "<" <AddOp> 
-                        | <RepOp> "<=" <AddOp> 
+                        | <RelOp> "<=" <AddOp>
                         | <RelOp> ">" <AddOp>
                         | <RelOp> ">=" <AddOp> 
                         | <AddOp>                                                                       .
@@ -79,7 +79,7 @@ prog
 <UniMin>             ::= "-" <UniMin> 
                         | <ExpOp>                                                                       .
 
-<ExpOp>              ::= <Ops> "*" <ExpOp> 
+<ExpOp>              ::= <Ops> "^" <ExpOp>
                         | <Ops>                                                                         .
 
 <Ops>                ::= "(" <Express> ")" 
