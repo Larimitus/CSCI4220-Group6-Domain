@@ -21,63 +21,72 @@ open CONCRETE_REPRESENTATION;
 
 (* =========================================================================================================== *)
 (* Here is where you add the M and E (as well as any other) definitions you developed in M2. The primary challenge here
-   is to translate the parse expression notation we used in M2 to the actual SML tree patterns used in the TL System. 
+   is to translate the parse Expressession notation we used in M2 to the actual SML tree patterns used in the TL System. 
    
    Example:
    
-   M1: <stmtList> ::= <Stmt> ";" <stmList>
+   M1: <StmtList> ::= <Stmt> ";" <stmList>
    
-   M2: M( [[ stmt_1 ; stmtList_1 ]], m) = M(stmtList_1, M(stmt_1,m))
+   M2: M( [[ Stmt_1 ; StmtList_1 ]], m) = M(StmtList_1, M(Stmt_1,m))
     
    M4: 
-        M( itree(inode("stmtList",_),
+        M( itree(inode("StmtList",_),
                     [
                         Stmt,       (* this is a regular variable in SML and has no other special meaning *)
                         semiColon,  (* this is a regular variable in SML and has no other special meaning *)
-                        stmtList    (* this is a regular variable in SML and has no other special meaning *) 
+                        StmtList    (* this is a regular variable in SML and has no other special meaning *) 
                     ]
                 ),
            m
            
-        ) = M( stmtList, M(Stmt, m) )  
+        ) = M( StmtList, M(Stmt, m) )  
         
         
-        Note that the above M4 implementation will match ANY tree whose root is "stmtList" having three children.
+        Note that the above M4 implementation will match ANY tree whose root is "StmtList" having three children.
         Such matches can be further constrained by explicitly exposing more of the tree structure.
         
-        M( itree(inode("stmtList",_),
+        M( itree(inode("StmtList",_),
                     [
                         Stmt,                       (* this is a regular variable in SML and has no other special meaning *)
                         itree(inode(";",_), [] ),   (* A semi-colon is a leaf node. All leaf nodes have an empty children list. *)
                         
-                        stmtList                    (* this is a regular variable in SML and has no other special meaning *) 
+                        StmtList                    (* this is a regular variable in SML and has no other special meaning *) 
                     ]
                 ),
            m
            
-        ) = M( stmtList, M(Stmt, m) )  
+        ) = M( StmtList, M(Stmt, m) )  
         
         Note that the above M4 implementation will match ANY tree satisifying the following constraints:
-            (1) the root is "stmtList"
+            (1) the root is "StmtList"
             (2) the root has three children
             (3) the second child is a semi-colon   
 *)
 
-(* Auxilary Functions *)
+(* Helper functions *)
 fun pow(x, 0) = 1
   | pow(x, n) = x * pow(x, n-1);
 
-(* Expression *)
+(* Expressessions *)
 fun E( itree(inode("Express",_),
                 [
-                    Express,
+                    LogicOr
+                ]
+            ), 
+        m
+    ) = E(LogicOr, m)
+ 
+  (* Logical Or *)
+  | E( itree(inode("LogicOr",_),
+                [
+                    LogicOr,
                     itree(inode("||",_), [] ),
                     LogicAnd
                 ]
             ),
         m0
     ) = let
-          val (v1,m1) = E(Express, m0)
+          val (v1,m1) = E(LogicOr, m0)
         in
           if toBool(v1) then (Boolean true, m1)
           else
@@ -88,7 +97,7 @@ fun E( itree(inode("Express",_),
             end
         end
   
-  | E( itree(inode("Express",_),
+  | E( itree(inode("LogicOr",_),
                 [
                     LogicAnd
                 ]
@@ -125,7 +134,7 @@ fun E( itree(inode("Express",_),
         m
     ) = E(LogicEqual, m)
 
-  (* Logical Equal *)
+  (* LogicEqual *)
   | E( itree(inode("LogicEqual",_),
                 [
                     LogicEqual,
@@ -164,63 +173,63 @@ fun E( itree(inode("Express",_),
         m
     ) = E(RelOp, m)
         
-  (* Relational Operator *)
+  (* RelOp *)
   | E( itree(inode("RelOp",_),
                 [
-                    RelOp,
+                    AddOp1,
                     itree(inode("<",_), [] ),
-                    AddOp
+                    AddOp2
                 ]
             ),
         m0
     ) = let
-          val (v1,m1) = E(RelOp, m0)
-          val (v2,m2) = E(AddOp, m1)
+          val (v1,m1) = E(AddOp1, m0)
+          val (v2,m2) = E(AddOp2, m1)
         in
           (Boolean(toInt(v1) < toInt(v2)), m2)
         end
         
   | E( itree(inode("RelOp",_),
                 [
-                    RelOp,
+                    AddOp1,
                     itree(inode("<=",_), [] ),
-                    AddOp
+                    AddOp2
                 ]
             ),
         m0
     ) = let
-          val (v1,m1) = E(RelOp, m0)
-          val (v2,m2) = E(AddOp, m1)
+          val (v1,m1) = E(AddOp1, m0)
+          val (v2,m2) = E(AddOp2, m1)
         in
           (Boolean(toInt(v1) <= toInt(v2)), m2)
         end
   
   | E( itree(inode("RelOp",_),
                 [
-                    RelOp,
+                    AddOp1,
                     itree(inode(">",_), [] ),
-                    AddOp
+                    AddOp2
                 ]
             ),
         m0
     ) = let
-          val (v1,m1) = E(RelOp, m0)
-          val (v2,m2) = E(AddOp, m1)
+          val (v1,m1) = E(AddOp1, m0)
+          val (v2,m2) = E(AddOp2, m1)
         in
           (Boolean(toInt(v1) > toInt(v2)), m2)
         end
         
   | E( itree(inode("RelOp",_),
                 [
-                    RelOp,
+                    AddOp1,
                     itree(inode(">=",_), [] ),
-                    AddOp
+                    AddOp2
                 ]
             ),
         m0
     ) = let
-          val (v1,m1) = E(RelOp, m0)
-          val (v2,m2) = E(AddOp, m1)
+          val (v1,m1) = E(AddOp1, m0)
+          val (v2,m2) = E(AddOp2, m1)
         in
           (Boolean(toInt(v1) >= toInt(v2)), m2)
         end
@@ -233,7 +242,7 @@ fun E( itree(inode("Express",_),
         m
     ) = E(AddOp, m)
   
-  (* Additive Operator *)
+  (* AddOp *)
   | E( itree(inode("AddOp",_),
                 [
                     AddOp,
@@ -272,7 +281,7 @@ fun E( itree(inode("Express",_),
         m
     ) = E(MultiOp, m)
   
-  (* Multiplicative Operator *)  
+  (* MultiOp *)  
   | E( itree(inode("MultiOp",_),
                 [
                     MultiOp,
@@ -291,7 +300,7 @@ fun E( itree(inode("Express",_),
   | E( itree(inode("MultiOp",_),
                 [
                     MultiOp,
-                    itree(inode("div",_), [] ),
+                    itree(inode("/",_), [] ),
                     UniMin
                 ]
             ),
@@ -348,7 +357,7 @@ fun E( itree(inode("Express",_),
         m
     ) = E(ExpOp, m)
   
-  (* Exponentiation *)
+  (* ExpOp *)
   | E( itree(inode("ExpOp",_),
                 [
                     Ops,
@@ -364,15 +373,23 @@ fun E( itree(inode("Express",_),
           (Integer(pow(toInt(v1),toInt(v2))), m2)
         end
   
-  (* Operations *)
-  | E( itree(inode("Ops",_),
+  | E( itree(inode("ExpOp",_),
                 [
-                    Op
+                    Ops
                 ]
             ),
         m
-    ) = E(Op, m)
-    
+    ) = E(Ops, m)
+  
+  (* Ops *)
+  | E( itree(inode("Ops",_),
+                [
+                    operation
+                ]
+            ),
+        m
+    ) = E(operation, m)
+  
   | E( itree(inode("Ops",_),
                 [
                     itree(inode("(",_), [] ),
@@ -412,6 +429,7 @@ fun E( itree(inode("Express",_),
           (Boolean(not(toBool(v1))), m1)
         end
   
+  (* Identifier *)
   | E(itree(inode("identifier",_),
                 [
                     id_node
@@ -425,103 +443,7 @@ fun E( itree(inode("Express",_),
         in
           (v, m)
         end
-
-    | E( itree(inode("ExpOp",_),
-                [
-                    Ops
-                ]
-            ),
-        m
-    ) = E(Ops, m)
-
-  (* Increment & Decrement *)
-  (*
-  | E( itree(inode("IncrDecr",_),
-                [
-                    PreIncrDecr
-                ]
-            ),
-        m
-    ) = E(PreIncrDecr, m)
-
-  | E( itree(inode("IncrDecr",_),
-                [
-                    PostIncrDecr
-                ]
-            ),
-        m
-    ) = E(PostIncrDecr, m)
-*)
-  (* PreIncrement & PreDecrement *)
-  | E( itree(inode("PreIncrDecr",_), 
-                [ 
-                    itree(inode("++",_), [] ),
-                    id_node
-                ] 
-             ), 
-        m0
-    ) = let
-          val id = getLeaf(id_node)
-          val loc = getLoc(accessEnv(id, m0))
-          val v = accessStore(loc, m0)
-          val inc = Integer(toInt(v) + 1)
-          val m1 = updateStore(loc, inc, m0)
-        in
-          (inc, m1)
-        end
-        
-  | E(  itree(inode("PreIncrDecr",_), 
-                [ 
-                    itree(inode("--",_), [] ),
-                    id_node
-                ] 
-             ), 
-        m0
-    ) = let
-          val id = getLeaf(id_node)
-          val loc = getLoc(accessEnv(id, m0))
-          val v = accessStore(loc, m0)
-          val dec = Integer(toInt(v) - 1)
-          val m1 = updateStore(loc, dec, m0)
-        in
-          (dec, m1)
-        end
-
-  (* PostIncrement & PostDecrement *)      
-  | E(  itree(inode("PostIncrDecr",_), 
-                [ 
-                    id_node,
-                    itree(inode("++",_), [] )
-                ] 
-             ), 
-        m0
-    ) = let
-          val id = getLeaf(id_node)
-          val loc = getLoc(accessEnv(id, m0))
-          val v = accessStore(loc, m0)
-          val inc = Integer(toInt(v) + 1)
-          val m1 = updateStore(loc, inc, m0)
-        in
-          (v, m1)
-        end
-        
-  | E(  itree(inode("PostIncrDecr",_), 
-                [ 
-                    id_node,
-                    itree(inode("--",_), [] )
-                ] 
-             ), 
-        m0
-    ) = let
-          val id = getLeaf(id_node)
-          val loc = getLoc(accessEnv(id, m0))
-          val v = accessStore(loc, m0)
-          val dec = Integer(toInt(v) - 1)
-          val m1 = updateStore(loc, dec, m0)
-        in
-          (v, m1)
-        end
-
+  
   (* Value *)
   | E( itree(inode("Value",_),
                 [
@@ -551,10 +473,81 @@ fun E( itree(inode("Express",_),
         in
           (Integer v_int, m)
         end
+  
+  (* IncrDecr *)
+  | E( itree(inode("IncrDecr",_), 
+                [ 
+                    itree(inode("++",_), [] ),
+                    id_node
+                ] 
+             ), 
+        m0
+    ) = let
+          val id = getLeaf(id_node)
+          val loc = getLoc(accessEnv(id, m0))
+          val v = accessStore(loc, m0)
+          val inc = Integer(toInt(v) + 1)
+          val m1 = updateStore(loc, inc, m0)
+        in
+          (inc, m1)
+        end
+        
+  | E(  itree(inode("IncrDecr",_), 
+                [ 
+                    itree(inode("--",_), [] ),
+                    id_node
+                ] 
+             ), 
+        m0
+    ) = let
+          val id = getLeaf(id_node)
+          val loc = getLoc(accessEnv(id, m0))
+          val v = accessStore(loc, m0)
+          val dec = Integer(toInt(v) - 1)
+          val m1 = updateStore(loc, dec, m0)
+        in
+          (dec, m1)
+        end
+        
+  | E(  itree(inode("IncrDecr",_), 
+                [ 
+                    id_node,
+                    itree(inode("++",_), [] )
+                ] 
+             ), 
+        m0
+    ) = let
+          val id = getLeaf(id_node)
+          val loc = getLoc(accessEnv(id, m0))
+          val v = accessStore(loc, m0)
+          val inc = Integer(toInt(v) + 1)
+          val m1 = updateStore(loc, inc, m0)
+        in
+          (v, m1)
+        end
+        
+  | E(  itree(inode("IncrDecr",_), 
+                [ 
+                    id_node,
+                    itree(inode("--",_), [] )
+                ] 
+             ), 
+        m0
+    ) = let
+          val id = getLeaf(id_node)
+          val loc = getLoc(accessEnv(id, m0))
+          val v = accessStore(loc, m0)
+          val dec = Integer(toInt(v) - 1)
+          val m1 = updateStore(loc, dec, m0)
+        in
+          (v, m1)
+        end
     
   | E(  itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn E root = " ^ x_root ^ "\n\n")
   
   | E _ = raise Fail("error in Semantics.E - this should never occur")
+
+
 
 
 (* Model Functions *)
@@ -600,7 +593,7 @@ fun M(  itree(inode("prog",_),
         m
     ) = M(Stmt, m)
   
-  (* Declaration *)
+  (* Declare *)
   | M( itree(inode("Declare",_),
                 [
                     itree(inode("int",_), [] ),
@@ -627,7 +620,7 @@ fun M(  itree(inode("prog",_),
             updateEnv(id, BOOL, n, (env, n, s))
         end
    
-  (* Assignment *)
+  (* Assign *)
   | M( itree(inode("Assign",_),
                 [
                     IncrDecr
@@ -696,25 +689,32 @@ fun M(  itree(inode("prog",_),
         in
           m2
         end
+        
+  (* Print *)
+  | M( itree(inode("Print", _),
+                [
+                    itree(inode("print",_), []),
+                    itree(inode("(",_), [] ),
+                    Express,
+                    itree(inode(")",_), [] )
+                ]
+            ),
+            m0
+     ) = let
+            val (v, m1) = E(Express, m0)
+            val str = varToString(v)
+         in
+            (print(str ^ "\n"); m1)
+         end
          
-  (* Conditional *)
-(*   
+  (* Cond *)
   | M( itree(inode("Cond",_),
                    [
-                       if_stmt
+                       Cond
                    ]
                ),
            m
-       ) = M(if_stmt, m)
-  
-  | M( itree(inode("Cond",_),
-                [
-                    if_else
-                ]
-            ),
-        m
-    ) = M(if_else, m)
-*)
+       ) = M(Cond, m)
 
   (* If *)
   | M( itree(inode("If", _),
@@ -743,17 +743,17 @@ fun M(  itree(inode("prog",_),
                     Express,
                     itree(inode(")",_), [] ),
                     itree(inode("then",_), []),
-                    block1,
+                    Block1,
                     itree(inode("else",_), []),
-                    block2
+                    Block2
                   ]
                ),
               m0
         ) = let
                  val (v, m1) = E(Express, m0)
              in
-                  if toBool(v) then M( block1, m1)
-                  else M(block2, m1)
+                  if toBool(v) then M( Block1, m1)
+                  else M(Block2, m1)
              end
   
   (* Block *)
@@ -772,7 +772,7 @@ fun M(  itree(inode("prog",_),
             m
           end
           
-  (* Iterator *)
+  (* Iter *)
   | M( itree(inode("Iter",_),
                 [
                     Iter
@@ -781,7 +781,7 @@ fun M(  itree(inode("prog",_),
         m
     ) = M(Iter, m)
   
-  (* For Iterator *)
+  (* For Iter *)
   | M( itree(inode("ForIter",_),
                 [
                     itree(inode("for",_), [] ),
@@ -818,7 +818,7 @@ fun M(  itree(inode("prog",_),
           aux(m1)
         end
 
-  (* While Iterator *)
+  (* While Iter *)
   | M( itree(inode("WhileIter",_),
                 [
                     itree(inode("while",_), [] ),
@@ -849,26 +849,10 @@ fun M(  itree(inode("prog",_),
           aux(m0)
         end
 
-  (* Print *)
-  | M( itree(inode("Print", _),
-                [
-                    itree(inode("print",_), []),
-                    itree(inode("(",_), [] ),
-                    Express,
-                    itree(inode(")",_), [] )
-                ]
-            ),
-            m0
-     ) = let
-            val (v, m1) = E(Express, m0)
-            val str = varToString(v)
-         in
-            (print(str ^ "\n"); m1)
-         end        
-        
   | M(  itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur")
+
 
 (* =========================================================================================================== *)
 end (* struct *)
