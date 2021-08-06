@@ -1,3 +1,5 @@
+exception runtime_error;
+
 (* =========================================================================================================== *)
 structure Model =
 
@@ -11,6 +13,8 @@ struct
    this translation. 
 *)
 fun getLeaf( term ) = CONCRETE.leavesToStringRaw term 
+
+fun error msg = ( print msg; raise runtime_error );
 
 
 (* For your typeChecker you may want to have a datatype that defines the types 
