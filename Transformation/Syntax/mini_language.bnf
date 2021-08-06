@@ -89,7 +89,7 @@ prog
                         | <IncrDecr> 
                         | <Value>                                                                       .
 
-<value>              ::= integer 
+<Value>              ::= integer 
                         | boolean                                                                       .
 
 <Print>              ::= "print" "(" <Express> ")"                                                      .
