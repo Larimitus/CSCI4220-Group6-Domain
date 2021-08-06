@@ -79,7 +79,8 @@ prog
 <UniMin>             ::= "-" <UniMin> 
                         | <ExpOp>                                                                       .
 
-<ExpOp>              ::= <Ops> "*" <ExpOp> | <Ops>                                                      .
+<ExpOp>              ::= <Ops> "*" <ExpOp> 
+                        | <Ops>                                                                         .
 
 <Ops>                ::= "(" <Express> ")" 
                         | "|" <Express> "|" 
