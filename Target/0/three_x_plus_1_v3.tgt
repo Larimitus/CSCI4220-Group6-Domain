@@ -79,9 +79,9 @@ print(sum2);
 
 print(sum);
 
-if (sum2 == 423 && not(sum != 888)) then {
-    if (sum2 + 465 >= sum && sum <= sum2 + 465)  then {
-        if (2 ^ 0 < 2 && 2 ^ 1 > 2 || 2 ^ 3 < 8) 
+if (sum2 == 423 || not(sum != 888)) then {
+    if (sum2 + 465 >= sum || sum <= sum2 + 465)  then {
+        if (2 ^ 0 < 2 || 2 ^ 1 > 2 || 2 ^ 3 < 8) 
         then {
             print ( 1 );
         }

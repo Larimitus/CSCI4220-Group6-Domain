@@ -25,21 +25,21 @@ open CONCRETE_REPRESENTATION;
    
    Example:
    
-   M1: <stmtList> ::= <stmt> ";" <stmList>
+   M1: <stmtList> ::= <Stmt> ";" <stmList>
    
    M2: M( [[ stmt_1 ; stmtList_1 ]], m) = M(stmtList_1, M(stmt_1,m))
     
    M4: 
         M( itree(inode("stmtList",_),
                     [
-                        stmt,       (* this is a regular variable in SML and has no other special meaning *)
+                        Stmt,       (* this is a regular variable in SML and has no other special meaning *)
                         semiColon,  (* this is a regular variable in SML and has no other special meaning *)
                         stmtList    (* this is a regular variable in SML and has no other special meaning *) 
                     ]
                 ),
            m
            
-        ) = M( stmtList, M(stmt, m) )  
+        ) = M( stmtList, M(Stmt, m) )  
         
         
         Note that the above M4 implementation will match ANY tree whose root is "stmtList" having three children.
@@ -47,7 +47,7 @@ open CONCRETE_REPRESENTATION;
         
         M( itree(inode("stmtList",_),
                     [
-                        stmt,                       (* this is a regular variable in SML and has no other special meaning *)
+                        Stmt,                       (* this is a regular variable in SML and has no other special meaning *)
                         itree(inode(";",_), [] ),   (* A semi-colon is a leaf node. All leaf nodes have an empty children list. *)
                         
                         stmtList                    (* this is a regular variable in SML and has no other special meaning *) 
@@ -55,7 +55,7 @@ open CONCRETE_REPRESENTATION;
                 ),
            m
            
-        ) = M( stmtList, M(stmt, m) )  
+        ) = M( stmtList, M(Stmt, m) )  
         
         Note that the above M4 implementation will match ANY tree satisifying the following constraints:
             (1) the root is "stmtList"
@@ -306,7 +306,7 @@ fun E( itree(inode("Express",_),
   | E( itree(inode("MultiOp",_),
                 [
                     MultiOp,
-                    itree(inode("mod",_), [] ),
+                    itree(inode("%",_), [] ),
                     UniMin
                 ]
             ),
@@ -365,6 +365,14 @@ fun E( itree(inode("Express",_),
         end
   
   (* Operations *)
+  | E( itree(inode("Ops",_),
+                [
+                    Op
+                ]
+            ),
+        m
+    ) = E(Op, m)
+    
   | E( itree(inode("Ops",_),
                 [
                     itree(inode("(",_), [] ),
@@ -427,7 +435,7 @@ fun E( itree(inode("Express",_),
     ) = E(Ops, m)
 
   (* Increment & Decrement *)
-(*   
+  (*
   | E( itree(inode("IncrDecr",_),
                 [
                     PreIncrDecr
@@ -444,7 +452,6 @@ fun E( itree(inode("Express",_),
         m
     ) = E(PostIncrDecr, m)
 *)
-
   (* PreIncrement & PreDecrement *)
   | E( itree(inode("PreIncrDecr",_), 
                 [ 
@@ -585,13 +592,13 @@ fun M(  itree(inode("prog",_),
     ) = M( Stmt, m )
    
   (* Statement *)
-  | M( itree(inode("stmt",_),
+  | M( itree(inode("Stmt",_),
                 [
-                    stmt
+                    Stmt
                 ]
             ),
         m
-    ) = M(stmt, m)
+    ) = M(Stmt, m)
   
   (* Declaration *)
   | M( itree(inode("Declare",_),
@@ -780,9 +787,9 @@ fun M(  itree(inode("prog",_),
                     itree(inode("for",_), [] ),
                     itree(inode("(",_), [] ),
                     Assign1,
-                    itree(inode(";",_), [] ),
+                    itree(inode(",",_), [] ),
                     Express,
-                    itree(inode(";",_), [] ),
+                    itree(inode(",",_), [] ),
                     Assign2,
                     itree(inode(")",_), [] ),
                     Block
@@ -845,7 +852,7 @@ fun M(  itree(inode("prog",_),
   (* Print *)
   | M( itree(inode("Print", _),
                 [
-                    itree(inode("Print",_), []),
+                    itree(inode("print",_), []),
                     itree(inode("(",_), [] ),
                     Express,
                     itree(inode(")",_), [] )
