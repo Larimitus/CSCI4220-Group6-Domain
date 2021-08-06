@@ -5,94 +5,90 @@ prog
 (* ======================================================================================================= *)
 (*                                             basic expressions                                           *)
 (* ======================================================================================================= *)
-<prog>               ::= <StmtList> "."                                                                 .
+<prog>               ::= <StmtList>                                                                     .
 
-<StmtList>           ::= <Stmt> ";" <StmtList> 
-                        | <Stmt> ";" 
-                        | <epsilon>                                                                     .
+<StmtList>           ::= <Stmt> ";" <StmtList>
+                      | <Stmt> ";"                                                                      .
 
-<Stmt>               ::= <Declare> 
-                        | <Assign> 
-                        | <Print> 
-                        | <Block> 
-                        | <Cond> 
-                        | <Iter>                                                                        .
+<Stmt>               ::= <Declare>
+                      | <Assign>
+                      | <Print>
+                      | <Cond>
+                      | <Iter>
+                      | <Block>                                                                         .
 
-<Declare>            ::= "int" identifier 
-                        | "bool" identifier                                                             .
+<Declare>            ::= "int" identifier
+                      | "bool" identifier                                                               .
 
-<Assign>             ::= <IncrDecr> 
-                        | "int" identifier "=" <Express> 
-                        | "bool" identifier "=" <Express>
-                        | identifier "=" <Express>                                                      .
+<Assign>             ::= <IncrDecr>
+                      | "bool" identifier "=" <Express>
+                      | "int" identifier "=" <Express>
+                      | identifier "=" <Express>                                                        .
 
 <Block>              ::= "{" <StmtList> "}"                                                             .
 
-<Cond>               ::= <If> 
-                        | <IfElse>                                                                      .
+<Cond>               ::= <If>
+                      | <IfElse>                                                                        .
 
 <If>                 ::= "if" "(" <Express> ")" "then" <Block>                                          .
 
 <IfElse>             ::= "if" "(" <Express> ")" "then" <Block> "else" <Block>                           .
 
-<IncrDecr>           ::= <PreIncrDecr> 
-                        | <PostIncrDecr>                                                                .
+<IncrDecr>            ::= "++" identifier
+                      | "--" identifier
+                      | identifier "++"
+                      | identifier "--"                                                                 .
 
-<PreIncrDecr>        ::= "++" identifier 
-                        | "--" identifier                                                               .
-
-<PostIncrDecr>       ::= identifier "++" 
-                        | identifier "--"                                                               .
-
-<Iter>               ::= <ForIter> 
-                        | <WhileIter>                                                                   .
+<Iter>               ::= <ForIter>
+                      | <WhileIter>                                                                     .
 
 <ForIter>            ::= "for" "(" <Assign> "," <Express> "," <Assign> ")" <Block>                      .
 
 <WhileIter>          ::= "while" "(" <Express> ")" <Block>                                              .
 
-<Express>            ::= <Express> "||" <LogicAnd> 
-                        | <LogicEqual>                                                                  .
+<Express>            ::= <LogicOr>                                                                      .
 
-<LogicAnd>           ::= <LogicAnd> "&&" <LogicEqual> 
-                        | <LogicEqual>                                                                  .
+<LogicAnd>           ::= <LogicAnd> "&&" <LogicEqual>
+                      | <LogicEqual>                                                                    .
 
-<LogicEqual>         ::= <LogicEqual> "==" <RelOp> 
-                        | <LogicEqual> "!=" <RelOp> 
-                        | <RelOp>                                                                       .
+<LogicEqual>         ::= <LogicEqual> "==" <RelOp>
+                      | <LogicEqual> "!=" <RelOp>
+                      | <RelOp>                                                                         .
 
-<RelOp>              ::= <RelOp> "<" <AddOp> 
-                        | <RepOp> "<=" <AddOp> 
-                        | <RelOp> ">" <AddOp>
-                        | <RelOp> ">=" <AddOp> 
-                        | <AddOp>                                                                       .
+<LogicOr>            ::= <LogicOr> "||" <LogicAnd>
+                      | <LogicAnd>                                                                      .
 
-<AddOp>              ::= <AddOp> "+" <MultiOp> 
-                        | <AddOp> "-" <MultiOp> 
-                        | <MultiOp>                                                                     .
+<RelOp>              ::= <AddOp> "<" <AddOp>
+                      | <AddOp> "<=" <AddOp>
+                      | <AddOp> ">" <AddOp>
+                      | <AddOp> ">=" <AddOp>
+                      | <AddOp>                                                                         .
 
-<MultiOp>            ::= <MultiOp> "*" <UniMin> 
-                        | <MultiOp> "/" <UniMin> 
-                        | <MultiOp> "%" <UniMin> 
-                        | <UniMin>                                                                      .
+<AddOp>              ::= <AddOp> "+" <MultiOp>
+                      | <AddOp> "-" <MultiOp>
+                      | <MultiOp>                                                                       .
 
-<UniMin>             ::= "-" <UniMin> 
-                        | <ExpOp>                                                                       .
+<MultiOp>            ::= <MultiOp> "*" <UniMin>
+                      | <MultiOp> "/" <UniMin>
+                      | <MultiOp> "%" <UniMin>
+                      | <UniMin>                                                                        .
 
-<ExpOp>              ::= <Ops> "*" <ExpOp> 
-                        | <Ops>                                                                         .
+<UniMin>             ::= "-" <UniMin>
+                      | <ExpOp>                                                                         .
 
-<Ops>                ::= "(" <Express> ")" 
-                        | "|" <Express> "|" 
-                        | "not" "(" <Express> ")" 
-                        | identifier 
-                        | <IncrDecr> 
-                        | <Value>                                                                       .
+<ExpOp>              ::= <Ops> "^" <ExpOp>
+                      | <Ops>                                                                           .
 
-<value>              ::= integer 
-                        | boolean                                                                       .
+<Ops>                ::= identifier
+                      | "(" <Express> ")"
+                      | "|" <Express> "|"
+                      | <IncrDecr>
+                      | "not" "(" <Express> ")"
+                      | <Value>                                                                         .
+
+<Value>              ::= integer
+                      | "true"
+                      | "false"                                                                         .
 
 <Print>              ::= "print" "(" <Express> ")"                                                      .
-(* ======================================================================================================= *)
-<epsilon>   ::=                                                                                         .
 (* ======================================================================================================= *)
