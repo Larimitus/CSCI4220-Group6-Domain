@@ -65,7 +65,7 @@ open CONCRETE_REPRESENTATION;
 
 fun M(  itree(inode("prog",_), 
                 [ 
-                    stmt_list
+                    StmtList
                 ] 
              ), 
         m
