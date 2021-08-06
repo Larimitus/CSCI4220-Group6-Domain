@@ -274,20 +274,7 @@ fun typeOf( itree(inode("Express",_),
         end
 
   | typeOf( itree(inode("ExpOp",_), [ Ops ] ), m) = typeOf(Ops, m)
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   (* Ops *)
   | typeOf( itree(inode("Ops",_),
                 [
@@ -373,7 +360,15 @@ fun typeOf( itree(inode("Express",_),
     ) = INT
 
   (* IncrDecr *)
-  | typeOf( itree(inode("IncrDecr",_), 
+  | typeOf(itree(inode("IncrDecr",_),
+                    [
+                        IncrDecr
+                    ]
+                ),
+            m
+        ) = typeOf(IncrDecr, m)
+        
+  | typeOf( itree(inode("PreIncrDecr",_), 
                 [ 
                     itree(inode("++",_), [] ),
                     id_node
@@ -387,7 +382,7 @@ fun typeOf( itree(inode("Express",_),
           else ERROR
         end
 
-  | typeOf(  itree(inode("IncrDecr",_), 
+  | typeOf(  itree(inode("PreIncrDecr",_), 
                 [ 
                     itree(inode("--",_), [] ),
                     id_node
@@ -401,7 +396,7 @@ fun typeOf( itree(inode("Express",_),
           else ERROR
         end
 
-  | typeOf(  itree(inode("IncrDecr",_), 
+  | typeOf(  itree(inode("PostIncrDecr",_), 
                 [ 
                     id_node,
                     itree(inode("++",_), [] )
@@ -415,7 +410,7 @@ fun typeOf( itree(inode("Express",_),
           else ERROR
         end
 
-  | typeOf( itree(inode("IncrDecr",_), 
+  | typeOf( itree(inode("PostIncrDecr",_), 
                 [ 
                     id_node,
                     itree(inode("--",_), [] )
