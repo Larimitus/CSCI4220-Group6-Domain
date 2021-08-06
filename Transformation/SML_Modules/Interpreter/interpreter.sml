@@ -36,7 +36,7 @@ fun execute [ programTree ] =
                 
         print("\n\n\n");
         print(" ======================================= \n");
-        Model.showProgState(result);
+        (* Model.showProgState(result); *)
         print("\n ======================================= \n");
         print("\n\n\n") 
     end
