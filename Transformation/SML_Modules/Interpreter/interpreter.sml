@@ -25,7 +25,7 @@ fun execute [ programTree ] =
         val tree0 = Strategic_Values.getTerm programTree
        
        (* here is where the call to the typeCheck function is made. Two outcomes are possible: (1) return an m, or (2) raise an exception *)       
-        val _     = TypeChecker.typeCheck(tree0,Model.initialModel); 
+        val _     = TypeChecker.typeCheck(tree0,Model.initialModel);
         val _     = print("\n\n -------------type check passed\n\n");
 
         (* here is where the call to the semantic function M is made. The result is the model that exists at the end of the computation. *)
@@ -35,9 +35,9 @@ fun execute [ programTree ] =
         (* you may want to output the final model in order to validate that there are no memory leaks in your code *)
                 
         print("\n\n\n");
-        print(" ======================================= \n");
-        Model.showProgState(result);
-        print("\n ======================================= \n");
+        print("======================================= \n");
+        (* Model.showProgState(result); *)
+        print("======================================= \n");
         print("\n\n\n") 
     end
   | execute _ = raise Fail("Error in Interpreter.execute - this should never occur")

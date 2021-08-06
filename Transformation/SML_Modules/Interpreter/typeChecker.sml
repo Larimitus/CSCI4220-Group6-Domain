@@ -8,50 +8,54 @@ open CONCRETE_REPRESENTATION;
 (* =========================================================================================================== *)
 (*
     Here is where your typeCheck and typeOf definitions go. The primary challenge here is to translate the parse 
-    expressession notation we used in M2 to the actual SML tree patterns used in the TL System. See the comments in
+    Expressession notation we used in M2 to the actual SML tree patterns used in the TL System. See the comments in
     the semantics.sml file for a more detailed discussion on this topic. 
 *)
 
 exception model_error;
 
 
-fun typeOf( itree(inode("Express",_),
+fun typeOf( itree(inode("Express",_), [ LogicOr ] ), m) = typeOf(LogicOr, m)
+
+  (* Logical Or *)
+  | typeOf( itree(inode("LogicOr",_),
                 [
-                    Express,
+                    LogicOr,
                     itree(inode("||",_), [] ),
                     LogicAnd
                 ]
             ),
         m
     ) = let
-          val t1 = typeOf( Express, m )
+          val t1 = typeOf( LogicOr, m )
           val t2 = typeOf( LogicAnd, m )
         in
           if t1 = t2 andalso t1 = BOOL then BOOL
           else ERROR
         end
-    | typeOf( itree(inode("Express",_), [ LogicEqual ] ), m) = typeOf(LogicEqual, m)
-    
-(* LogicalAnd *)
-| typeOf( itree(inode("LogicalAnd",_),
-              [
-                  LogicalAnd,
-                  itree(inode("&&",_), [] ),
-                  LogicEqual
-              ]
-          ),
-      m
-  ) = let
-        val t1 = typeOf( LogicalAnd, m )
-        val t2 = typeOf( LogicEqual, m )
-      in
-        if t1 = t2 andalso t1 = BOOL then BOOL
-        else ERROR
-      end
 
-  | typeOf( itree(inode("LogicalAnd",_), [ LogicEqual ] ), m) = typeOf(LogicEqual, m)
-  
- (* LogicEqual *)
+  | typeOf( itree(inode("LogicOr",_), [ LogicAnd ] ), m) = typeOf(LogicAnd, m)
+
+  (* Logical And *)
+  | typeOf( itree(inode("LogicAnd",_),
+                [
+                    LogicAnd,
+                    itree(inode("&&",_), [] ),
+                    LogicEqual
+                ]
+            ),
+        m
+    ) = let
+          val t1 = typeOf( LogicAnd, m )
+          val t2 = typeOf( LogicEqual, m )
+        in
+          if t1 = t2 andalso t1 = BOOL then BOOL
+          else ERROR
+        end
+
+  | typeOf( itree(inode("LogicAnd",_), [ LogicEqual ] ), m) = typeOf(LogicEqual, m)
+
+  (* LogicEqual *)
   | typeOf( itree(inode("LogicEqual",_),
                 [
                     LogicEqual,
@@ -85,7 +89,7 @@ fun typeOf( itree(inode("Express",_),
         end
 
   | typeOf( itree(inode("LogicEqual",_), [ RelOp ] ), m) = typeOf(RelOp, m)
-  
+
   (* RelOp *)
   | typeOf( itree(inode("RelOp",_),
                 [
@@ -151,7 +155,7 @@ fun typeOf( itree(inode("Express",_),
           else ERROR
         end
 
-  | typeOf( itree(inode("RelOp",_), [ AddOpp ] ), m) = typeOf(AddOpp, m)
+  | typeOf( itree(inode("RelOp",_), [ AddOp ] ), m) = typeOf(AddOp, m)
 
   (* AddOp *)
   | typeOf( itree(inode("AddOp",_),
@@ -238,8 +242,8 @@ fun typeOf( itree(inode("Express",_),
         end
 
   | typeOf( itree(inode("MultiOp",_), [ UniMin ] ), m) = typeOf(UniMin, m)
-  
-  (* UniMin *)
+
+  (* Unary Minus *)
   | typeOf( itree(inode("UniMin",_),
                 [
                     itree(inode("-",_), [] ),
@@ -256,7 +260,7 @@ fun typeOf( itree(inode("Express",_),
 
   | typeOf( itree(inode("UniMin",_), [ ExpOp ] ), m) = typeOf(ExpOp, m)
   
-  (* Exponent *)
+  (* ExpOp *)
   | typeOf( itree(inode("ExpOp",_),
                 [
                     Ops,
@@ -274,7 +278,7 @@ fun typeOf( itree(inode("Express",_),
         end
 
   | typeOf( itree(inode("ExpOp",_), [ Ops ] ), m) = typeOf(Ops, m)
-
+  
   (* Ops *)
   | typeOf( itree(inode("Ops",_),
                 [
@@ -287,23 +291,23 @@ fun typeOf( itree(inode("Express",_),
   | typeOf( itree(inode("Ops",_),
                 [
                     itree(inode("(",_), [] ),
-                    express,
+                    Express,
                     itree(inode(")",_), [] )
                 ]
             ),
         m
-    ) = typeOf(express, m)
+    ) = typeOf(Express, m)
 
   | typeOf( itree(inode("Ops",_),
                 [
                     itree(inode("|",_), [] ),
-                    express,
+                    Express,
                     itree(inode("|",_), [] )
                 ]
             ),
         m
     ) = let
-          val t = typeOf( express, m )
+          val t = typeOf( Express, m )
         in
           if t = INT then INT
           else ERROR
@@ -313,13 +317,13 @@ fun typeOf( itree(inode("Express",_),
                 [
                     itree(inode("not",_), [] ),
                     itree(inode("(",_), [] ),
-                    express,
+                    Express,
                     itree(inode(")",_), [] )
                 ]
             ),
         m
     ) = let
-          val t = typeOf( express, m )
+          val t = typeOf( Express, m )
         in
           if t = BOOL then BOOL
           else ERROR
@@ -360,15 +364,7 @@ fun typeOf( itree(inode("Express",_),
     ) = INT
 
   (* IncrDecr *)
-  | typeOf(itree(inode("IncrDecr",_),
-                    [
-                        IncrDecr
-                    ]
-                ),
-            m
-        ) = typeOf(IncrDecr, m)
-        
-  | typeOf( itree(inode("PreIncrDecr",_), 
+  | typeOf( itree(inode("IncrDecr",_), 
                 [ 
                     itree(inode("++",_), [] ),
                     id_node
@@ -382,7 +378,7 @@ fun typeOf( itree(inode("Express",_),
           else ERROR
         end
 
-  | typeOf(  itree(inode("PreIncrDecr",_), 
+  | typeOf(  itree(inode("IncrDecr",_), 
                 [ 
                     itree(inode("--",_), [] ),
                     id_node
@@ -396,7 +392,7 @@ fun typeOf( itree(inode("Express",_),
           else ERROR
         end
 
-  | typeOf(  itree(inode("PostIncrDecr",_), 
+  | typeOf(  itree(inode("IncrDecr",_), 
                 [ 
                     id_node,
                     itree(inode("++",_), [] )
@@ -410,7 +406,7 @@ fun typeOf( itree(inode("Express",_),
           else ERROR
         end
 
-  | typeOf( itree(inode("PostIncrDecr",_), 
+  | typeOf( itree(inode("IncrDecr",_), 
                 [ 
                     id_node,
                     itree(inode("--",_), [] )
@@ -423,41 +419,40 @@ fun typeOf( itree(inode("Express",_),
           if t = INT then INT
           else ERROR
         end
-
-    
+  
   | typeOf( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn typeOf root = " ^ x_root ^ "\n\n")
+
   | typeOf _ = raise Fail("Error in Model.typeOf - this should never occur")
-        
 
-fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
 
-  (* StmtList *)
-  | typeCheck (itree(inode("StmtList",_),
-                    [
-                        Stmt,
-                        itree(inode(";",_), [] ),
-                        StmtList
-                    ]
-                ),
-            m0
-        ) = 
-            let
-                val m1 = typeCheck(Stmt, m0)
-                val m2 = typeCheck(StmtList, m1)
-            in
-                m2
-            end
-    (* StmtList *)        
-    | typeCheck (itree(inode("StmtList",_),
-                    [
-                        Stmt,
-                        itree(inode(";",_), [] )
-                    ]
-                ),
-            m
-        ) = typeCheck(Stmt, m)
-       
-  (* Stmt *)
+fun typeCheck( itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
+
+  (* Statement List *)
+  | typeCheck( itree(inode("StmtList",_),
+                        [
+                            Stmt,
+                            itree(inode(";",_), [] ),
+                            StmtList
+                        ]
+                    ),
+                m0
+            ) = let
+                  val m1 = typeCheck(Stmt, m0)
+                  val m2 = typeCheck(StmtList, m1)
+                in
+                  m2
+                end
+                
+    | typeCheck( itree(inode("StmtList",_),
+                        [
+                            Stmt,
+                            itree(inode(";",_), [] )
+                        ]
+                    ),
+                m
+            ) = typeCheck(Stmt, m)
+            
+  (* Statement *)
   | typeCheck( itree(inode("Stmt",_),
                 [
                     Stmt
@@ -480,7 +475,7 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
         in
             updateEnv(id, INT, n, m)
         end
-  (* Declare *)  
+    
   | typeCheck( itree(inode("Declare",_),
                 [
                     itree(inode("bool",_), [] ),
@@ -508,7 +503,7 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
           if t1 = ERROR then raise model_error
           else m
         end
-  (* Assign *)  
+    
   | typeCheck( itree(inode("Assign",_),
                 [
                     itree(inode("bool",_), [] ),
@@ -527,7 +522,7 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
           if t = BOOL then m1
           else raise model_error
         end
-  (* Assign *)  
+    
   | typeCheck( itree(inode("Assign",_),
                 [
                     itree(inode("int",_), [] ),
@@ -546,7 +541,7 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
           if t = INT then m1
           else raise model_error
         end
-  (* Assign *)
+   
   | typeCheck( itree(inode("Assign",_),
                 [
                     id_node,
@@ -564,7 +559,7 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
           else raise model_error
         end
    
-  (* Print *) 
+  (* print *) 
   | typeCheck(itree(inode("Print", _),
                     [
                         itree(inode("print",_), []),
@@ -590,7 +585,7 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
             m
         ) = typeCheck(Cond, m)
   
-  (* If *)
+  (* if *)
   | typeCheck(itree(inode("If", _),
                     [
                     itree(inode("if",_), [] ),
@@ -598,19 +593,19 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
                     Express,
                     itree(inode(")",_), [] ),
                     itree(inode("then",_), []),
-                    block1
+                    Block1
                     ]
                  ),
               m
            ) = let
                   val t1 = typeOf( Express, m )
-                  val m1 = typeCheck( block1, m )
+                  val m1 = typeCheck( Block1, m )
                in
                   if t1 = BOOL then m
                   else raise model_error
                end
                
-  (* IfElse *)
+  (* if else *)
   | typeCheck(itree(inode("IfElse", _),
                   [
                       itree(inode("if",_), [] ),
@@ -618,16 +613,16 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
                       Express,
                       itree(inode(")",_), [] ),
                       itree(inode("then",_), []),
-                      block1,
+                      Block1,
                       itree(inode("else",_), []),
-                      block2
+                      Block2
                   ]
                ),
               m
           ) = let
                   val t1 = typeOf( Express, m )
-                  val m1 = typeCheck( block1, m )
-                  val m2 = typeCheck( block2, m )
+                  val m1 = typeCheck( Block1, m )
+                  val m2 = typeCheck( Block2, m )
               in
                  if t1 = BOOL then m
                  else raise model_error
@@ -636,17 +631,17 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
   | typeCheck(itree(inode("Block",_), 
                 [
                     itree(inode("{",_), []),
-                    stmtList,
+                    StmtList,
                     itree(inode("}",_), [])
                 ]
             ),
           m0
       ) = let
-            val m1 = typeCheck( stmtList, m0 )
+            val m1 = typeCheck( StmtList, m0 )
           in
             m0
           end
-   (* Iter *)
+   
    | typeCheck(itree(inode("Iter",_),
                     [
                         Iter
@@ -654,31 +649,31 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
             ),
           m
         ) = typeCheck(Iter, m)
-   (* ForIter *)
+        
    | typeCheck (itree(inode("ForIter",_),
                 [
                   itree(inode("for",_), [] ),
                   itree(inode("(",_), [] ),
-                  assignment1,
+                  Assign1,
                   itree(inode(",",_), [] ),
                   Express,
                   itree(inode(",",_), [] ),
-                  assignment2,
+                  Assign2,
                   itree(inode(")",_), [] ),
                   Block
                 ]
             ),
          m0
         ) = let
-                val m1 = typeCheck( assignment1, m0 )
+                val m1 = typeCheck( Assign1, m0 )
                 val t1 = typeOf( Express, m1 )
                 val m2 = typeCheck( Block, m1 )
-                val m3 = typeCheck( assignment2, m2 )
+                val m3 = typeCheck( Assign2, m2 )
             in
                 if t1 = BOOL then m0
                 else raise model_error
             end
-  (* WhileIter *)          
+            
   | typeCheck(itree(inode("WhileIter",_),
                 [
                     itree(inode("while",_), [] ),
@@ -697,9 +692,13 @@ fun typeCheck(itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m)
         else raise model_error
         
         end
-  
-  
+
+
+            
+            
+
   | typeCheck( itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn typeCheck root = " ^ x_root ^ "\n\n")
+  
   | typeCheck _ = raise Fail("Error in Model.typeCheck - this should never occur")
 
 
