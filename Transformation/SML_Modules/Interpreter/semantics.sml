@@ -516,7 +516,7 @@ fun E( itree(inode("Express",_),
         end
 
   (* Value *)
-  | E( itree(inode("value",_),
+  | E( itree(inode("Value",_),
                 [
                     itree(inode("true",_), [] )
                 ]
@@ -524,7 +524,7 @@ fun E( itree(inode("Express",_),
         m
     ) = (Boolean true, m)
     
-  | E( itree(inode("value",_),
+  | E( itree(inode("Value",_),
                 [
                     itree(inode("false",_), [] )
                 ]
@@ -532,7 +532,7 @@ fun E( itree(inode("Express",_),
         m
     ) = (Boolean false, m)
   
-  | E( itree(inode("value",_),
+  | E( itree(inode("Value",_),
                 [
                     integer
                 ]
@@ -638,13 +638,13 @@ fun M(  itree(inode("prog",_),
                     itree(inode("bool",_), [] ),
                     id_node,
                     itree(inode("=",_), [] ),
-                    expr
+                    Express
                 ]
             ),
         m0
     ) = let
           val id = getLeaf(id_node)
-          val (v, m1) = E(expr, m0)
+          val (v, m1) = E(Express, m0)
           val (_,n,_) = m1
           val m2 = updateEnv(id, BOOL, n, m1)
           val loc = getLoc(accessEnv(id, m2))
@@ -658,13 +658,13 @@ fun M(  itree(inode("prog",_),
                     itree(inode("int",_), [] ),
                     id_node,
                     itree(inode("=",_), [] ),
-                    expr
+                    Express
                 ]
             ),
         m0
     ) = let
           val id = getLeaf(id_node)
-          val (v, m1) = E(expr, m0)
+          val (v, m1) = E(Express, m0)
           val (_,n,_) = m1
           val m2 = updateEnv(id, INT, n, m1)
           val loc = getLoc(accessEnv(id, m2))
@@ -677,13 +677,13 @@ fun M(  itree(inode("prog",_),
                 [
                     id_node,
                     itree(inode("=",_), [] ),
-                    expr
+                    Express
                 ]
             ),
         m0
     ) = let
           val id = getLeaf(id_node)
-          val (v, m1) = E(expr, m0)
+          val (v, m1) = E(Express, m0)
           val loc = getLoc(accessEnv(id, m1))
           val m2 = updateStore(loc, v, m1)
         in
@@ -710,30 +710,30 @@ fun M(  itree(inode("prog",_),
 *)
 
   (* If *)
-  | M( itree(inode("if_stmt", _),
+  | M( itree(inode("If", _),
                 [
                     itree(inode("if",_), [] ),
                     itree(inode("(",_), [] ),
-                    expr,
+                    Express,
                     itree(inode(")",_), [] ),
                     itree(inode("then",_), []),
-                    block
+                    Block
                 ]
              ),
             m0
       ) = let
-               val (v, m1) = E(expr, m0)
+               val (v, m1) = E(Express, m0)
            in
-                if toBool(v) then M(block, m1)
+                if toBool(v) then M(Block, m1)
                 else m1
            end
 
   (* If Else *)
-  | M( itree(inode("if_else", _),
+  | M( itree(inode("IfElse", _),
                   [
                     itree(inode("if",_), [] ),
                     itree(inode("(",_), [] ),
-                    expr,
+                    Express,
                     itree(inode(")",_), [] ),
                     itree(inode("then",_), []),
                     block1,
@@ -743,7 +743,7 @@ fun M(  itree(inode("prog",_),
                ),
               m0
         ) = let
-                 val (v, m1) = E(expr, m0)
+                 val (v, m1) = E(Express, m0)
              in
                   if toBool(v) then M( block1, m1)
                   else M(block2, m1)
@@ -766,7 +766,7 @@ fun M(  itree(inode("prog",_),
           end
           
   (* Iterator *)
-  | M( itree(inode("iter",_),
+  | M( itree(inode("Iter",_),
                 [
                     Iter
                 ]
@@ -843,9 +843,9 @@ fun M(  itree(inode("prog",_),
         end
 
   (* Print *)
-  | M( itree(inode("print", _),
+  | M( itree(inode("Print", _),
                 [
-                    itree(inode("print",_), []),
+                    itree(inode("Print",_), []),
                     itree(inode("(",_), [] ),
                     Express,
                     itree(inode(")",_), [] )

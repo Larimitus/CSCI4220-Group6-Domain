@@ -18,7 +18,7 @@ exception model_error;
 fun typeOf( itree(inode("Express",_),
                 [
                     Express,
-                    itree(inode("or",_), [] ),
+                    itree(inode("||",_), [] ),
                     LogicAnd
                 ]
             ),
@@ -36,7 +36,7 @@ fun typeOf( itree(inode("Express",_),
 | typeOf( itree(inode("LogicalAnd",_),
               [
                   LogicalAnd,
-                  itree(inode("and",_), [] ),
+                  itree(inode("&&",_), [] ),
                   LogicEqual
               ]
           ),
