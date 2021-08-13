@@ -1,0 +1,6 @@
+int x = 3;
+int sum = 0;
+repeat {
+    sum2 = (sum2 + 3);
+    x++;
+} until (x < 5);
