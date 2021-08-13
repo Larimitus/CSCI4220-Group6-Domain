@@ -1,0 +1,14 @@
+int num1 = 1234;
+int num2 = 5678;
+int temp = 0;
+//Before Swap
+print(num1);
+print(num2);
+
+temp = num1;
+num1 = num2;
+num2 = temp;
+//After Swap
+print(num1);
+print(num2);
+
