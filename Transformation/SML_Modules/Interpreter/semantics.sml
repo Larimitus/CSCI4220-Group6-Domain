@@ -849,6 +849,34 @@ fun M(  itree(inode("prog",_),
           aux(m0)
         end
 
+  | M(itree(inode("RepeatUntil",_),
+                [
+                        itree(inode("repeat",_), []),
+                        Block,
+                        itree(inode("(",_), []),
+                        Express,
+                        itree(inode(")",_),[])
+                ]
+            ),
+  	m0
+  	) = let
+          fun aux(m1) =
+  		    let
+                  val (v, m2) = E(Express, m1)
+              in
+                  if toBool(v) then
+                      let
+                          val m3 = M(Block, m2)
+                          val m4 = aux(m3)
+                      in
+                          m4
+                      end
+                  else m2
+              end
+        in
+            aux(m0)
+        end
+
   | M(  itree(inode(x_root,_), children),_) = raise General.Fail("\n\nIn M root = " ^ x_root ^ "\n\n")
   
   | M _ = raise Fail("error in Semantics.M - this should never occur")

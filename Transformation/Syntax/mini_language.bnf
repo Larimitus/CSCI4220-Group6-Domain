@@ -40,11 +40,14 @@ prog
                       | identifier "--"                                                                 .
 
 <Iter>               ::= <ForIter>
-                      | <WhileIter>                                                                     .
+                      | <WhileIter>
+                      | <RepeatUntil>                                                                   .
 
 <ForIter>            ::= "for" "(" <Assign> "," <Express> "," <Assign> ")" <Block>                      .
 
 <WhileIter>          ::= "while" "(" <Express> ")" <Block>                                              .
+
+<RepeatUntil>        ::= "repeat" <Block> "until" "(" <Express> ")"                                     .
 
 <Express>            ::= <LogicOr>                                                                      .
 
