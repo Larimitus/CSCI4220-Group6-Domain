@@ -1,0 +1,10 @@
+int num = 123456789;
+print(num);
+int reverseNumber = 0;
+while(num != 0)
+{
+    reverseNumber = reverseNumber * 10;
+    reverseNumber = reverseNumber + num % 10;
+    num = num / 10;
+};
+print(reverseNumber);
