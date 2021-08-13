@@ -1,0 +1,19 @@
+// Palindrome Checker
+int r;
+int sum = 0;
+int temp;
+
+int palindrome = 123321;
+
+temp = palindrome;
+while(palindrome > 0) {
+    r = palindrome % 10;
+    sum = (sum * 10) + r;
+    palindrome = palindrome / 10;
+};
+
+if(temp == sum) then {
+    print(true);
+} else {
+    print(false);
+};
