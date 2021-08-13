@@ -79,6 +79,8 @@ comment      = "//" .* ;
 "not"                               => ( SHELL( yytext                           , yytext, getNextTokenPos( yytext ))          );
 "for"                               => ( SHELL( yytext                           , yytext, getNextTokenPos( yytext ))          );
 "while"                             => ( SHELL( yytext                           , yytext, getNextTokenPos( yytext ))          );
+"repeat"                            => ( SHELL( yytext                           , yytext, getNextTokenPos( yytext ))          );
+"until"                             => ( SHELL( yytext                           , yytext, getNextTokenPos( yytext ))          );
 
 "||"                                => ( SHELL( yytext                           , yytext, getNextTokenPos( yytext ))          );
 "&&"                                => ( SHELL( yytext                           , yytext, getNextTokenPos( yytext ))          );

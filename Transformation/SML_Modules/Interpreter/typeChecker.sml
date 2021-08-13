@@ -692,6 +692,25 @@ fun typeCheck( itree(inode("prog",_), [ StmtList ] ), m) = typeCheck(StmtList, m
         else raise model_error
         
         end
+| typeCheck(itree(inode("RepeatUntil",_),
+            [
+                itree(inode("repeat",_), [] ),
+                Block,
+                itree(inode("until",_), [] ),
+                itree(inode("(",_), [] ),
+                Express,
+                itree(inode(")",_), [] )
+            ]
+        ),
+    m0
+ ) = let
+        val m1     = typeCheck( Block, m0 )
+        val t1     = typeOf( Express, m0 )
+    in
+        if t1 = BOOL then m0
+    else raise model_error
+
+    end
 
 
             

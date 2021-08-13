@@ -1,6 +1,8 @@
-int x = 3;
+int x = 0;
 int sum = 0;
+int sum2;
 repeat {
-    sum2 = (sum2 + 3);
+    sum2 = (2 + 3);
     x++;
+    print(x);
 } until (x < 5);

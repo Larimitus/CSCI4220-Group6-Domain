@@ -853,6 +853,7 @@ fun M(  itree(inode("prog",_),
                 [
                         itree(inode("repeat",_), []),
                         Block,
+                        itree(inode("until",_), [] ),
                         itree(inode("(",_), []),
                         Express,
                         itree(inode(")",_),[])
